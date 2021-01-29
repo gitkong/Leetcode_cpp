@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/super_gitkong/Documents/github/LeetCode_cpp/code/main.cpp
+iostream
+-
+vector
+-
+unordered_set
+-
+unordered_map
+-
+sstream
+-
+

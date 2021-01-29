@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <sstream>
 
 using namespace std;
 
@@ -186,48 +187,108 @@ public:
     }
 
     /// 6.Z字形变换，思路：多个vector保存，然后依次读取。。。很暴力
+    /// 优化：只需要一个vector保存即可，通过下标标记不同的string
     string convert(const string &s, int numRows) {
         if (numRows == 0 || numRows == 1) {
             return s;
         }
-        unordered_map<int, vector<string>> map;
-        for (int i = 0; i < numRows; ++i) {
-            //pair<int, vector<string>>
-            unordered_map<int, vector<string>>::iterator iter = map.find(i);
-            if (iter == map.end()) {
-                /// 不存在，生成
-                vector<string> list;
-                map.insert({i,list});
+        vector<string> nums(min(numRows, int(s.size())));
+        int row = 0;
+        bool isDown = true;
+        for (char c : s) {
+            nums[row] += c;
+            /// 更新行
+            if (row == 0 || row == numRows - 1) {
+                /// 变换方向
+                isDown = !isDown;
             }
+            row += isDown ? 1 : -1;
         }
-        int index = 0;
-        bool isIncre = true;
-        for (int i = 0; i < s.length(); ++i) {
-            string tmp = s.substr(i, 1);
-
-            unordered_map<int, vector<string>>::iterator iter = map.find(index);
-            iter->second.push_back(tmp);
-
-            if (isIncre) {
-                index++;
-            } else {
-                index--;
-            }
-            if (index == numRows - 1) {
-                isIncre = false;
-            } else if (index == 0) {
-                isIncre = true;
-            }
-        }
-
         string result;
-        for (int i = 0; i < numRows; ++i) {
-            unordered_map<int, vector<string>>::iterator iter = map.find(i);
-            for (int i = 0; i < iter->second.size(); ++i) {
-                result.append(iter->second[i]);
-            }
+        for (string tmp : nums) {
+            result += tmp;
         }
         return result;
+        ///
+//        unordered_map<int, vector<string>> map;
+//        for (int i = 0; i < numRows; ++i) {
+//            //pair<int, vector<string>>
+//            unordered_map<int, vector<string>>::iterator iter = map.find(i);
+//            if (iter == map.end()) {
+//                /// 不存在，生成
+//                vector<string> list;
+//                map.insert({i,list});
+//            }
+//        }
+//        int index = 0;
+//        bool isIncre = true;
+//        for (int i = 0; i < s.length(); ++i) {
+//            string tmp = s.substr(i, 1);
+//
+//            unordered_map<int, vector<string>>::iterator iter = map.find(index);
+//            iter->second.push_back(tmp);
+//
+//            if (isIncre) {
+//                index++;
+//            } else {
+//                index--;
+//            }
+//            if (index == numRows - 1) {
+//                isIncre = false;
+//            } else if (index == 0) {
+//                isIncre = true;
+//            }
+//        }
+//
+//        string result;
+//        for (int i = 0; i < numRows; ++i) {
+//            unordered_map<int, vector<string>>::iterator iter = map.find(i);
+//            for (int i = 0; i < iter->second.size(); ++i) {
+//                result.append(iter->second[i]);
+//            }
+//        }
+//        return result;
+    }
+
+    /// 7.整数反转：思路：字符串反转-low
+    /// 思路：数字取最后一位，然后再*10 + 下一位数字
+    int reverse(int x) {
+        int res = 0;
+        while (x != 0) {
+            int pos = x % 10;
+            x /= 10;
+            /// 设置退出条件
+            if (res > INT32_MAX / 10 || (res == INT32_MAX / 10 && pos > INT32_MAX % 10)) return 0;
+            if (res < INT32_MIN / 10 || (res == INT32_MIN / 10 && pos < INT32_MIN % 10)) return 0;
+            res = res * 10 + pos;
+        }
+        return res;
+
+        if (x == 0 || fabs(x) >= pow(2,31) - 1) {
+            return 0;
+        }
+        bool isPlus = x * -1 < 0;
+        string s = to_string(abs(x));
+        if (s.size() > 10) {
+            return 0;
+        }
+        string result;
+        for (int i = s.size() - 1; i >= 0; --i) {
+            string subS = s.substr(i, 1);
+            result += subS;
+        }
+        if (result.substr(0,1) == "0") {
+            result = result.substr(1,result.size() - 1);
+        }
+        int count;
+        stringstream ss;
+        ss << result;
+        ss >> count;
+        if (count >= pow(2,31) - 1 || result.empty()) {
+            return 0;
+        }
+
+        return count * (isPlus ? 1 : -1);
     }
 };
 
@@ -252,7 +313,12 @@ int main() {
 //    cout << count;
 
 //    string s = object.longestPalindrome("ccc");
-    string s = object.convert("AB", 1);
-    cout << s;
+//    string s = object.convert("AB", 1);
+//    cout << s;
+
+    int count = object.reverse(123);
+    cout << count;
+//    int maxx =pow(2,31) - 1;
+//    cout << maxx;
     return 0;
 }

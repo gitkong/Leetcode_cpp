@@ -290,6 +290,53 @@ public:
 
         return count * (isPlus ? 1 : -1);
     }
+
+    /// 8.字符串转整数（atoi），思路：遍历字符串 res = res * 10 + cValue;
+    int charToInt(const char &c) {
+        if (c == '0') return 0;
+        if (c == '1') return 1;
+        if (c == '2') return 2;
+        if (c == '3') return 3;
+        if (c == '4') return 4;
+        if (c == '5') return 5;
+        if (c == '6') return 6;
+        if (c == '7') return 7;
+        if (c == '8') return 8;
+        if (c == '9') return 9;
+        if (c == '-') return -1;
+        if (c == '+') return -3;
+        return -2;
+    }
+
+    int myAtoi(string s) {
+        while (s[0] == ' ') {
+            s = s.erase(0, 1);
+        }
+        if (s == "0" || charToInt(s[0]) == -2) return 0;
+        int isPlus = 1;
+        if (charToInt(s[0]) == -1) {
+            isPlus = -1;
+        }
+        bool forgetFirst = isPlus == -1 || charToInt(s[0]) == -3;
+        int res = 0;
+        for (int i = (forgetFirst ? 1 : 0); i < s.size(); ++i) {
+            int cValue = charToInt(s[i]);
+
+            if (cValue < 0) {
+                break;
+            }
+            /// 提前退出，避免*10后溢出
+            if (res * isPlus > INT32_MAX / 10 || (res * isPlus == INT32_MAX / 10 && cValue >= 7)) {
+                return INT32_MAX;
+            } else if (res * isPlus < INT32_MIN / 10 || (res * isPlus == INT32_MIN / 10 && cValue >= 8)) {
+                return INT32_MIN;
+            }
+            res = res * 10 + cValue;
+        }
+        res *= isPlus;
+
+        return res;
+    }
 };
 
 int main() {
@@ -316,7 +363,7 @@ int main() {
 //    string s = object.convert("AB", 1);
 //    cout << s;
 
-    int count = object.reverse(123);
+    int count = object.myAtoi("-2147483648");
     cout << count;
 //    int maxx =pow(2,31) - 1;
 //    cout << maxx;

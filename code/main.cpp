@@ -337,6 +337,42 @@ public:
 
         return res;
     }
+    
+    /// 9.回文数字，思路：拿到数字长度后，每次比较前后两个数字是否一致，剩下长度为1或者0的时候，就肯定是回文数字了
+    /// 更快的：直接反转数字后比较
+    bool isPalindrome(int x) {
+        if (x < 10 && x >= 0) {
+            return true;
+        }
+        if (x  % 10 == 0 || x < 0) {
+            return false;
+        }
+        /// 数字反转后比较
+        int tmp = x;
+        int res = 0;
+        while (x != 0) {
+            int pos = x % 10;
+            x /= 10;
+            res = res * 10 + pos;
+        }
+        return tmp == res;
+        /// 取前后数字来比较，每次减2个数字
+//        int size = (int)to_string(x).size();
+//        while (size > 0) {
+//            int powV = pow(10, size - 1);
+//            if (x % 10 == x / powV) {
+//                if (size == 1 || size == 0) return true;
+//
+//                x = x % powV;
+//                x /= 10;
+//                size -= 2;
+//            }
+//            else {
+//                return false;
+//            }
+//        }
+//        return true;
+    }
 };
 
 int main() {

@@ -515,6 +515,33 @@ public:
         }
         return num;
     }
+
+    /// 14. 最长公共前缀 思路：遍历判断上次和下一个的是否公共
+    string comparePrefix(string &startStr, string &endStr) {
+        string tmp = "";
+        while (startStr.size() > 0 && endStr.size() > 0) {
+            if (startStr[0] == endStr[0]) {
+                tmp += startStr[0];
+                startStr = startStr.erase(0, 1);
+                endStr = endStr.erase(0, 1);
+            } else {
+                break;
+            }
+        }
+        return tmp;
+    }
+
+    string longestCommonPrefix(vector<string>& strs) {
+        if (strs.size() <= 0) return "";
+        int start = 0, end = strs.size() - 1;
+        string result = comparePrefix(strs[start], strs[end]);
+        start++;
+        end--;
+        for (int i = start; i <= end; ++i) {
+            result = comparePrefix(strs[i], result);
+        }
+        return result;
+    }
 };
 
 int main() {
@@ -545,9 +572,10 @@ int main() {
 //    int count = object.maxArea(height);
 //    cout << count;
 
-//    string str = object.intToRoman(60);
-//    cout << str;
-    int num = object.romanToInt("IV");
-    cout << num;
+    vector<string> strs = {"aaa","aa","aaa"};
+    string str = object.longestCommonPrefix(strs);
+    cout << str;
+//    int num = object.romanToInt("IV");
+//    cout << num;
     return 0;
 }
